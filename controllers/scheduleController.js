@@ -5,6 +5,7 @@ exports.createSchedule = async (req, res) => {
   try {
     const { title, courseCode, lecturer, day, time, venue } = req.body;
 
+    // Automatically attach the admin’s project to the schedule
     const newSchedule = await Schedule.create({
       title,
       courseCode,
@@ -12,6 +13,7 @@ exports.createSchedule = async (req, res) => {
       day,
       time,
       venue,
+      project: req.user.project, // 👈 ensure it belongs to the admin’s project
       createdBy: req.user?.role === "admin" ? "Admin" : "User",
     });
 
@@ -24,10 +26,15 @@ exports.createSchedule = async (req, res) => {
   }
 };
 
-// ✅ Get all schedules
+// ✅ Get all schedules (for the logged-in user’s project only)
 exports.getAllSchedules = async (req, res) => {
   try {
-    const schedules = await Schedule.find().sort({ day: 1, time: 1 });
+    // Only return schedules belonging to the same project
+    const schedules = await Schedule.find({ project: req.user.project }).sort({
+      day: 1,
+      time: 1,
+    });
+
     res.json(schedules);
   } catch (err) {
     res.status(500).json({ error: err.message });

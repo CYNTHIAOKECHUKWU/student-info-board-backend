@@ -17,7 +17,15 @@ const scheduleSchema = new mongoose.Schema(
     day: {
       type: String,
       required: true,
-      enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      enum: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
     },
     time: {
       type: String,
@@ -30,6 +38,11 @@ const scheduleSchema = new mongoose.Schema(
     createdBy: {
       type: String,
       default: "Admin",
+    },
+    project: {
+      type: String,
+      enum: ["STUDENT-INFO-WEBSITE", "CIT306-WEBSITE", "ANOTHER-GROUP-SITE"],
+      required: true,
     },
   },
   { timestamps: true }

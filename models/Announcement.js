@@ -1,19 +1,13 @@
 const mongoose = require("mongoose");
 
-const announcementSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true
+const announcementSchema = new mongoose.Schema(
+  {
+    createdBy: {
+      type: String,
+      default: "Admin"
+    }
   },
-  content: {
-    type: String,
-    required: true
-  },
-  createdBy: {
-    type: String, // later you can change this to ObjectId if linked to User model
-    default: "Admin"
-  }
-}, { timestamps: true }); // adds createdAt & updatedAt automatically
+  { strict: false, timestamps: true } // allows any extra fields
+);
 
 module.exports = mongoose.model("Announcement", announcementSchema);

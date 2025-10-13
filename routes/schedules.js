@@ -1,12 +1,11 @@
 const express = require("express");
 const { createSchedule, getAllSchedules } = require("../controllers/scheduleController");
-const protect = require("../middleware/authMiddleware");
-const adminOnly = require("../middleware/roleMiddleware");
+const { protect, isAdmin } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 // ✅ Only admins can create schedules
-router.post("/", protect, adminOnly, createSchedule);
+router.post("/", protect, isAdmin, createSchedule);
 
 // ✅ Everyone can view schedules
 router.get("/", getAllSchedules);

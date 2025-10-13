@@ -3,12 +3,9 @@ const Announcement = require("../models/Announcement");
 // CREATE announcement
 exports.createAnnouncement = async (req, res) => {
   try {
-    const { title, content, createdBy } = req.body;
-
     const newAnnouncement = new Announcement({
-      title,
-      content,
-      createdBy
+      ...req.body, // takes all fields dynamically
+      createdBy: req.user?.role === "admin" ? "Admin" : "User"
     });
 
     await newAnnouncement.save();
