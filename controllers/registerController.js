@@ -5,18 +5,12 @@ exports.createRegistration = async (req, res) => {
   try {
     const { fullName, email, department, matricNumber, level, phone } = req.body;
 
-    // Validate required fields
-    if (!fullName || !email || !department || !matricNumber || !level || !phone) {
-      return res.status(400).json({ msg: "All fields are required" });
-    }
-
     // Check if already registered
     const existing = await Register.findOne({ matricNumber });
     if (existing) {
-      return res.status(400).json({ msg: "Student with this matric number already registered" });
+      return res.status(400).json({ msg: "Student already registered" });
     }
 
-    // Create new registration
     const newRegister = new Register({
       fullName,
       email,
@@ -27,21 +21,10 @@ exports.createRegistration = async (req, res) => {
     });
 
     await newRegister.save();
-
-    res.status(201).json({
-      msg: "Registration successful",
-      student: {
-        fullName: newRegister.fullName,
-        email: newRegister.email,
-        matricNumber: newRegister.matricNumber,
-        department: newRegister.department,
-        level: newRegister.level,
-        phone: newRegister.phone,
-      },
-    });
+    res.status(201).json({ msg: "Registration successful", newRegister });
   } catch (err) {
-    console.error("Registration error:", err);
-    res.status(500).json({ msg: "Internal server error" });
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -49,9 +32,8 @@ exports.createRegistration = async (req, res) => {
 exports.getAllRegistrations = async (req, res) => {
   try {
     const students = await Register.find().sort({ registeredAt: -1 });
-    res.status(200).json(students);
+    res.json(students);
   } catch (err) {
-    console.error("Fetch registrations error:", err);
-    res.status(500).json({ msg: "Internal server error" });
+    res.status(500).json({ error: err.message });
   }
 };
