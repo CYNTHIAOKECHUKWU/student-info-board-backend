@@ -29,7 +29,7 @@ exports.registerUser = async (req, res) => {
       msg: `${project} user registered successfully`,
       user: {
         id: user._id,
-        name: user.name,
+        name: user.fullName,
         email: user.email,
         role: user.role,
         project: user.project
