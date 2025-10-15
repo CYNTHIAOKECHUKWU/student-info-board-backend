@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
 
 // API routes
 app.use("/api/register", require("./routes/register"));
+console.log("✅ Register route mounted at /api/register");
 app.use("/api/announcements", require("./routes/announcements"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/events", require("./routes/events"));
