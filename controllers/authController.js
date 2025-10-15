@@ -53,6 +53,9 @@ exports.loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
+    console.log("JWT_SECRET from env:", process.env.JWT_SECRET);
+
+
     // 3️⃣ Include project in token payload
     const token = jwt.sign(
       { id: user._id, role: user.role, project: user.project },
