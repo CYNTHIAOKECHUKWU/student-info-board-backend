@@ -5,36 +5,24 @@ const jwt = require("jsonwebtoken");
 // REGISTER USER
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, project } = req.body;
+    const { name, email, password, role } = req.body;
 
-    // 1️⃣ Check if user already exists within the same project
-    const existingUser = await User.findOne({ email, project });
-    if (existingUser) {
-      return res.status(400).json({ msg: "User already exists in this project" });
-    }
+    // check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ msg: "User already exists" });
 
-    // 2️⃣ Hash password
+    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 3️⃣ Create new user with project attached
+    // create new user
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
-      role,
-      project
+      role
     });
 
-    res.status(201).json({
-      msg: `${project} user registered successfully`,
-      user: {
-        id: user._id,
-        name: user.fullName,
-        email: user.email,
-        role: user.role,
-        project: user.project
-      }
-    });
+    res.status(201).json({ msg: "User registered successfully", user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -43,36 +31,21 @@ exports.registerUser = async (req, res) => {
 // LOGIN USER
 exports.loginUser = async (req, res) => {
   try {
-    const { email, password, project } = req.body;
+    const { email, password } = req.body;
 
-    // 1️⃣ Find user by email and project to avoid cross-login
-    const user = await User.findOne({ email, project });
-    if (!user) return res.status(400).json({ msg: "Invalid credentials or wrong project" });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ msg: "Invalid credentials" });
 
-    // 2️⃣ Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
-    console.log("JWT_SECRET from env:", process.env.JWT_SECRET);
-
-
-    // 3️⃣ Include project in token payload
     const token = jwt.sign(
-      { id: user._id, role: user.role, project: user.project },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    res.json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        project: user.project
-      }
-    });
+    res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

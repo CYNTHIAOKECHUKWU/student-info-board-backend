@@ -3,21 +3,18 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const cors = require("cors");
 
-// Load environment variables
 dotenv.config();
-
-// Connect to MongoDB
 connectDB();
 
 const app = express();
-
-// Middlewares
 app.use(express.json());
-app.use(
-  cors({
-    origin: "*", // later you can restrict to your frontend URLs
-  })
-);
+app.use(cors({ origin: "*" }));
+
+// Log all requests
+app.use((req, res, next) => {
+  console.log("📦 Incoming data:", req.method, req.url, req.body);
+  next();
+});
 
 // Test route
 app.get("/", (req, res) => {
@@ -26,7 +23,6 @@ app.get("/", (req, res) => {
 
 // API routes
 app.use("/api/register", require("./routes/register"));
-console.log("✅ Register route mounted at /api/register");
 app.use("/api/announcements", require("./routes/announcements"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/events", require("./routes/events"));
@@ -37,6 +33,7 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// Start the server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, "0.0.0.0", () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 Server running on port ${PORT}`)
+);

@@ -2,18 +2,9 @@ const mongoose = require("mongoose");
 
 const scheduleSchema = new mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: true,
-    },
-    courseCode: {
-      type: String,
-      required: true,
-    },
-    lecturer: {
-      type: String,
-      required: true,
-    },
+    title: { type: String, required: true },
+    courseCode: { type: String, required: true },
+    lecturer: { type: String, required: true },
     day: {
       type: String,
       required: true,
@@ -27,23 +18,9 @@ const scheduleSchema = new mongoose.Schema(
         "Sunday",
       ],
     },
-    time: {
-      type: String,
-      required: true,
-    },
-    venue: {
-      type: String,
-      required: true,
-    },
-    createdBy: {
-      type: String,
-      default: "Admin",
-    },
-    project: {
-      type: String,
-      enum: ["STUDENT-INFO-WEBSITE", "CIT306-WEBSITE", "ANOTHER-GROUP-SITE"],
-      required: true,
-    },
+    time: { type: String, required: true },
+    venue: { type: String, required: true },
+    createdBy: { type: String, default: "Admin" },
   },
   { timestamps: true }
 );

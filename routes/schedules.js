@@ -7,7 +7,11 @@ const router = express.Router();
 // ✅ Only admins can create schedules
 router.post("/", protect, isAdmin, createSchedule);
 
-// ✅ Everyone can view schedules
+// ✅ Anyone can view all schedules
 router.get("/", getAllSchedules);
+
+// (Optional) add update/delete later
+// router.put("/:id", protect, isAdmin, updateSchedule);
+// router.delete("/:id", protect, isAdmin, deleteSchedule);
 
 module.exports = router;

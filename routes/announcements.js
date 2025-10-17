@@ -3,22 +3,23 @@ const {
   createAnnouncement,
   getAnnouncements,
   updateAnnouncement,
-  deleteAnnouncement
+  deleteAnnouncement,
 } = require("../controllers/announcementController");
-const protect = require("../middleware/authMiddleware");
+
+const { protect, isAdmin } = require("../middleware/authMiddleware"); // ✅ import properly
 
 const router = express.Router();
 
-// POST /api/announcements
-router.post("/", createAnnouncement);
+// ✅ Only logged-in admins can create announcements
+router.post("/", protect, isAdmin, createAnnouncement);
 
-// GET /api/announcements
+// ✅ Everyone (logged in or not) can read announcements
 router.get("/", getAnnouncements);
 
-// PUT /api/announcements/:id
-router.put("/:id", updateAnnouncement);
+// ✅ Only admins can update announcements
+router.put("/:id", protect, isAdmin, updateAnnouncement);
 
-// DELETE /api/announcements/:id
-router.delete("/:id", deleteAnnouncement);
+// ✅ Only admins can delete announcements
+router.delete("/:id", protect, isAdmin, deleteAnnouncement);
 
-module.exports = router; // ✅ this line is crucial
+module.exports = router;
